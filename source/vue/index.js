@@ -27,7 +27,6 @@ Vue.prototype.$mount = function() {
   el = vm.$el = query(el) //获取当前节点
   //渲染节点 通过watcher渲染
   let updateComponent = () => {
-    console.log('更新和渲染的实现')
     vm._update()
   }
   new Watcher(vm, updateComponent)
@@ -44,5 +43,11 @@ Vue.prototype._update = function() {
   //文本替换
   compiler(node, vm)
   el.appendChild(node) //替换完再放进去
+}
+Vue.prototype.$watch = function(key, handler) {
+  let vm = this
+  new Watcher(vm, key, handler, {
+    user: true
+  })
 }
 export default Vue

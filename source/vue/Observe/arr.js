@@ -8,6 +8,16 @@ let oldArrayProtoMethods = Array.prototype
 export let arrayMethods = Object.create(oldArrayProtoMethods)
 //修改方法
 let methods = ['push', 'shift', 'unshift', 'pop', 'reverse', 'sort', 'splice']
+//递归收集依赖
+export function dependArray(value) {
+  for(let i = 0; i < value.lenth; i++ ) {
+    let currentItem = value[i]
+    currentItem.__ob__?.dep.depend()
+    if(Array.isArray(currentItem)) {
+      dependArray(currentItem) //递归收集依赖
+    }
+  }
+}
 
 export function observeArray(inserted) {
   inserted.forEach(item => {
@@ -37,6 +47,8 @@ methods.forEach(method => {
     if(inserted){
       observeArray(inserted)
     }
+    // 通知使用的其他人改变
+    this.__ob__.dep.notify()
     return res
   }
 })
